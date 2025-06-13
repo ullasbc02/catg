@@ -1,4 +1,8 @@
 class Lexer:
+    digits = "0123456789"
+    operators = "+-*/"
+    stopwords = " "
+
     def __init__(self, text):
         self.text = text
         self.idx = 0
@@ -9,9 +13,58 @@ class Lexer:
 
     def tokenize(self):
         while self.idx < len(self.text):
-            print(f"Current char: {self.text[self.idx]}")
-            self.idx += 1
-    
+            if self.text[self.idx] in Lexer.digits:
+                self.token = self.extract_number()
+            
+            elif self.char in Lexer.operators:
+                self.token = Operator(self.char)
+                self.move()
+            elif self.char in Lexer.stopwords:
+                self.move()
+                continue
+            self.tokens.append(self.token)
+        return self.tokens
 
-a = Lexer("5 + 3")
-a.tokenize()
+
+
+
+    def extract_number(self):
+        number = ""
+        isFloat = False
+        while self.idx < len(self.text) and (self.char in Lexer.digits or self.char == '.' ):
+            if self.char == '.':
+                isFloat = True
+            number += self.char
+            self.move()
+    
+        if isFloat:
+            return Float(number)    
+        return Integer(number)
+
+    def move(self):
+        self.idx += 1
+        if self.idx < len(self.text):
+            self.char = self.text[self.idx]
+
+
+# Token classes for different types of tokens
+class Token:
+    def __init__(self, type, value):
+        self.type = type
+        self.value = value
+    def __repr__(self):
+        return f"{self.type}({self.value})"
+
+class Integer(Token):
+    def __init__(self, value):
+        super().__init__("INTEGER", value)
+
+class Float(Token):
+    def __init__(self, value):
+        super().__init__("FLOAT", value)
+
+class Operator(Token):
+    def __init__(self, value):
+        super().__init__("OP", value)
+
+
