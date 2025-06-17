@@ -57,11 +57,11 @@ class Token:
 
 class Integer(Token):
     def __init__(self, value):
-        super().__init__("INTEGER", value)
+        super().__init__("INT", value)
 
 class Float(Token):
     def __init__(self, value):
-        super().__init__("FLOAT", value)
+        super().__init__("FLT", value)
 
 class Operator(Token):
     def __init__(self, value):
