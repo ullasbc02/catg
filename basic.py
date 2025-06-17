@@ -53,7 +53,7 @@ class Token:
         self.type = type
         self.value = value
     def __repr__(self):
-        return f"{self.type}({self.value})"
+        return str(self.value)
 
 class Integer(Token):
     def __init__(self, value):
