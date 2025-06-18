@@ -9,6 +9,10 @@ class Parser:
             result = self.token
             self.move()
             return result
+        elif self.token =="(":
+            self.move()
+            result = self.expression()
+            return result
 
     def term(self):  # 1 * 2 or 1 / 2
         left = self.factor()
