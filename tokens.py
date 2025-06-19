@@ -19,3 +19,11 @@ class Float(Token):
 class Operator(Token):
     def __init__(self, value):
         super().__init__("OP", value)
+
+class Declaration(Token):
+    def __init__(self, value):
+        super().__init__("DECL", value)
+
+class Variable(Token):
+    def __init__(self, value):
+        super().__init__("VAR(?)", value)  #variable name, VAR, data type
