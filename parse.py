@@ -9,11 +9,20 @@ class Parser:
             result = self.token
             self.move()
             return result
-        elif self.token =="(":
+        elif self.token == "(":
             self.move()
-            return self.expression()
+            result = self.expression()
+            self.move()  # To consume the closing ')'
+            return result
         elif self.token.type.startswith("VAR"):
-            return self.variable()
+            result = self.token
+            self.move()  # ✅ move forward after consuming variable
+            return result
+        elif self.token.type == "OP" and self.token.value in ("+", "-"):
+            operation = self.token
+            self.move()
+            right = self.expression()
+            return [operation, right] 
 
 
     def term(self):  # 1 * 2 or 1 / 2

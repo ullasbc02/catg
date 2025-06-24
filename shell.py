@@ -4,16 +4,18 @@ from interpreter import Interpreter
 from data import Data
 
 base = Data()
-text = input("catg:> ")
+while True:
+    
+    text = input("catg:> ")
 
-tokenizer = Lexer(text)
-tokens = tokenizer.tokenize()
-print("Tokens:", tokens)
+    tokenizer = Lexer(text)
+    tokens = tokenizer.tokenize()
+    print("Tokens:", tokens)
 
-parser = Parser(tokens)
-tree = parser.parse()
-print("Parse Tree:", tree)
+    parser = Parser(tokens)
+    tree = parser.parse()
+    print("Parse Tree:", tree)
 
-interpreter = Interpreter(tree, base)
-result = interpreter.interpret()
-print("Result:", result)
+    interpreter = Interpreter(tree, base)
+    result = interpreter.interpret()
+    print("Result:", result)

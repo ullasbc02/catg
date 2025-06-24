@@ -16,25 +16,29 @@ class Lexer:
 
     def tokenize(self):
         while self.idx < len(self.text):
-            if self.text[self.idx] in Lexer.digits:
+            if self.char in Lexer.digits:
                 self.token = self.extract_number()
-            
+                self.tokens.append(self.token)
+
             elif self.char in Lexer.operators:
                 self.token = Operator(self.char)
+                self.tokens.append(self.token)
                 self.move()
+
             elif self.char in Lexer.stopwords:
-                self.move()
+                self.move()  # Skip spaces
                 continue
+
             elif self.char in Lexer.alphabets:
                 word = self.extract_word()
                 if word in Lexer.declarations:
                     self.token = Declaration(word)
                 else:
                     self.token = Variable(word)
+                self.tokens.append(self.token)
 
-
-            self.tokens.append(self.token)
         return self.tokens
+
 
 
     def extract_word(self):
