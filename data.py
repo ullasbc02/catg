@@ -3,7 +3,7 @@ class Data:
         self.variables = {}
 
     def read(self, id):
-        return self.variables.get[id]
+        return self.variables.get(id)
     
     def read_all(self):
         return self.variables
