@@ -4,18 +4,17 @@ from interpreter import Interpreter
 from data import Data
 
 base = Data()
+
 while True:
-    
-    text = input("catg:> ")
+    text = input("ShadowScript: ")
 
     tokenizer = Lexer(text)
     tokens = tokenizer.tokenize()
-    print("Tokens:", tokens)
 
     parser = Parser(tokens)
     tree = parser.parse()
-    print("Parse Tree:", tree)
 
     interpreter = Interpreter(tree, base)
     result = interpreter.interpret()
-    print("Result:", result)
+    if result is not None:
+        print(result)
