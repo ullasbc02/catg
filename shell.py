@@ -6,7 +6,7 @@ from data import Data
 base = Data()
 
 while True:
-    text = input("ShadowScript: ")
+    text = input("catg> ")
 
     tokenizer = Lexer(text)
     tokens = tokenizer.tokenize()

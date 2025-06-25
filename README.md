@@ -1,184 +1,152 @@
-# catg
-
-<img src="logo.png" alt="Logo" width="200"/>
-
-New Programming language with Python
 
 ---
 
-## 🟢 What Is a **Lexer**?
+# catg: A Toy Programming Language Interpreter
 
-A **lexer** (short for **lexical analyzer**) is the first stage of a compiler or interpreter.
-Its job is to **scan the raw code** (text) and break it into **tokens** — meaningful chunks that the parser can understand.
+<img src="logo.png" alt="catg logo" width="200"/>
 
----
-
-## 💡 Real-World Analogy
-
-Imagine this sentence:
-
-```
-let x = 5 + 3;
-```
-
-A lexer would turn this into:
-
-```
-[LET] [ID:x] [EQUALS] [INT:5] [PLUS] [INT:3] [SEMICOLON]
-```
-
-Like breaking down a sentence into labeled parts:
-
-* "let" → keyword
-* "x" → identifier
-* "=" → operator
-* "5" → integer
-* "+" → operator
-* "3" → integer
-* ";" → punctuation
+**catg** is a simple programming language interpreter written in Python.
+I built this as a learning project to better understand how interpreters work and how to design a mini-language from scratch.
 
 ---
 
-## 🧱 What Does a Lexer Do?
+## Features
 
-| Task                    | Example                                           |
-| ----------------------- | ------------------------------------------------- |
-| Reads characters        | `l`, `e`, `t`, ` `, `x`, `=` ...                  |
-| Groups them into tokens | `let`, `x`, `=`, `5`, `+`, `3`, `;`               |
-| Labels them with types  | `LET`, `ID`, `EQUALS`, `INT`, `PLUS`, `SEMICOLON` |
+* Variable declarations and assignments (`make x = 5`)
+* Arithmetic operations (`+`, `-`, `*`, `/`)
+* Comparison operators (`>`, `>=`, `<`, `<=`, `?=`)
+* Boolean operators (`and`, `or`, `not`)
+* Control flow:
 
----
-
-## 🧠 Why Do We Need a Lexer?
-
-Because:
-
-* It's **much easier** to analyze structured tokens than raw text
-* Lexing separates low-level concerns (characters, symbols) from high-level logic (expressions, statements)
+  * `if`, `elif`, `else`
+  * `while` loops
+* Interactive REPL so you can enter and run code live
 
 ---
 
-## 📦 Output of a Lexer: **Token Stream**
-
-The lexer turns this:
+## Example Program
 
 ```catg
-print 5 + 2;
+make x = 5 + 2
+if x > 3 do make x = x * 2 else do make x = 0
+while x > 0 do make x = x - 1
 ```
 
-Into this:
-
-```text
-PRINT    ('print')
-INT      (5)
-PLUS     ('+')
-INT      (2)
-SEMICOLON (';')
-```
----
-
-## 🔁 Summary
-
-| Concept | Description                                                 |
-| ------- | ----------------------------------------------------------- |
-| Lexer   | Turns source code text into tokens                          |
-| Token   | A labeled piece of code (e.g., keyword, number, identifier) |
-| Why?    | So the parser can work with structure instead of raw text   |
-
----
-Excellent — after the **lexer**, the **parser** is the next big player in a programming language’s engine. Let’s go step by step:
+This creates a variable `x`, conditionally modifies it, and then decrements it in a loop until it reaches zero.
 
 ---
 
-## 🟩 What Is a **Parser**?
+## How catg Works
 
-A **parser** is the part of a compiler or interpreter that takes the stream of tokens (from the lexer) and checks if the **structure** of the code is valid according to the grammar.
+catg has four main parts:
 
-It also **builds a tree** — called a **parse tree** or **syntax tree** — that represents how the code is organized.
+### 1. Lexer
+
+The lexer reads the source code and splits it into tokens (for example, turning `make x = 5 + 2` into `DECL('make') VAR('x') OP('=') INT('5') OP('+') INT('2')`).
+
+### 2. Parser
+
+The parser takes the tokens from the lexer and builds a syntax tree that represents the structure of the program.
+
+### 3. Interpreter
+
+The interpreter walks the syntax tree and executes the program: doing math, updating variables, checking conditions, and controlling flow.
+
+### 4. Data store
+
+This part keeps track of variables, their types, and values.
 
 ---
 
-## 🧠 In Simple Words:
-
-* **Lexer** → breaks text into words (tokens)
-* **Parser** → checks grammar and builds sentence structure (tree)
-
----
-
-### 🧾 Example: Input Code
-
-```catg
-let x = 5 + 2;
-```
-
-### ✅ Lexer Output (Tokens):
+## Project Structure
 
 ```
-LET  ID(x)  EQUALS  INT(5)  PLUS  INT(2)  SEMICOLON
-```
-
-### ✅ Parser Output:
-
-A tree that looks like this:
-
-```
-assignment
-├── let
-├── x
-├── =
-└── expr
-    ├── 5
-    ├── +
-    └── 2
+.
+├── data.py         # Variable storage and access
+├── interpreter.py  # Executes the syntax tree
+├── lexer.py        # Converts source code into tokens
+├── parse.py        # Builds the syntax tree from tokens
+├── shell.py        # Runs the REPL
+├── tokens.py       # Defines token types
+├── test_catg.py    # Unit tests
+└── README.md       # Documentation
 ```
 
 ---
 
-## 📦 What Does the Parser Actually Do?
+## Running catg
 
-| Task                  | Example                                  |
-| --------------------- | ---------------------------------------- |
-| Reads tokens          | `LET`, `ID`, `=`, `INT`, `+`, `INT`, `;` |
-| Follows grammar rules | Is this a valid assignment?              |
-| Builds tree structure | Represents how parts fit together        |
-| Detects syntax errors | e.g., missing `;` or unmatched `(`       |
+To launch the interactive shell:
 
----
-
-## 🧱 Parser + Grammar
-
-You define the parser rules in your ANTLR `.g4` file. For example:
-
-```antlr
-assignment: 'let' ID '=' expr ;
-expr: expr '+' expr | INT | ID ;
+```
+python shell.py
 ```
 
-ANTLR will:
+From there, you can type commands like:
 
-* Generate the parser class (`catgParser`)
-* Use this to check if the token sequence fits the rules
-* Create a **ParseTree**
-
----
-
-## 🧠 Why Is This Important?
-
-* **No logic is done here** — parser doesn’t calculate `5 + 2`
-* It just says: “Yes, this is a valid `assignment` statement”
-* Then you (in the visitor) will write the logic to actually **run or evaluate** the code
+```
+make x = 10
+while x > 0 do make x = x - 1
+if x ?= 0 do make y = 1 else do make y = 0
+```
 
 ---
 
-## 🔁 Summary
+## Testing
 
-| Component | Role                                        |
-| --------- | ------------------------------------------- |
-| Lexer     | Breaks raw code into tokens                 |
-| Parser    | Checks structure (syntax) and builds a tree |
-| Visitor   | Walks the tree and adds meaning (semantics) |
+The interpreter includes some unit tests using `unittest`.
+
+Example test:
+
+```python
+def test_arithmetic_addition(self):
+    self.run_code("make x = 5 + 3")
+    self.assertEqual(self.data.read("x").value, "8")
+```
+
+Run the tests with:
+
+```
+python test_catg.py
+```
 
 ---
 
+## Planned Improvements
 
+There are lots of ways this could be expanded. Some ideas I have:
+
+* Add a `print` statement
+* Support string values
+* Add lists/arrays
+* Add functions with parameters
+* File input/output
+* Better error messages
+* Support for nested scopes or blocks
+
+---
+
+## Author
+
+Created by Ullas as a way to learn and experiment with interpreters.
+
+---
+
+## License
+
+MIT License — feel free to use, modify, or share this project.
+
+---
+
+## Contributing
+
+If you’d like to contribute, feel free to open an issue or submit a pull request.
+
+---
+
+## Summary
+
+catg is a small, educational interpreter meant to help explore how programming languages are built. It’s written in Python and designed to be easy to understand and extend.
+
+---
 
